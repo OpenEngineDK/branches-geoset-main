@@ -20,4 +20,11 @@ ADD_LIBRARY(OpenEngine_Geometry
   Material.cpp
   VertexArray.h
   VertexArray.cpp
+  GeometrySet.h
 )
+
+TARGET_LINK_LIBRARIES(OpenEngine_Geometry
+  OpenEngine_Math
+)
+
+SUBDIRS(tests)
