@@ -111,14 +111,10 @@ public:
 
         // private constructor (only used by GetIterator)
         Iterator(GeometrySet& set) {
-            this->set = &set;
             pos = set.size;
             mem.vert.p = set.vert;
             mem.texc.p = set.texc;
         }
-
-        // the set we are iterating
-        GeometrySet* set;
 
         // current location (backwards, i.e. 0 == end)
         unsigned int pos;
@@ -138,7 +134,7 @@ public:
          * Attempts to access data through an empty iterator will
          * throw an exception (if complied with OE_SAFE).
          */
-        Iterator() : set(NULL), pos(0) {
+        Iterator() : pos(0) {
             // accesses to the empty iterator are checked
             // in: operation->()
         }
@@ -167,7 +163,7 @@ public:
         void Next() {
 #if OE_SAFE
             if (pos == 0)
-                throw Math::IndexOutOfBounds(set->size,0,set->size-1);
+                throw Core::Exception("Attempt to advance passed the end of an iterator");
 #endif
             --pos;
             mem.vert.p += Dimension * Shape;
