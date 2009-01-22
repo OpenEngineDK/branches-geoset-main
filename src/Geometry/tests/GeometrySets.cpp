@@ -1,5 +1,3 @@
-
-#include <boost/test/minimal.hpp>
 #include <Testing/Testing.h>
 
 #include <Geometry/GeometrySet.h>
@@ -16,8 +14,10 @@ int test_main(int argc, char* argv[]) {
     GeometrySet<2, 3>::Iterator elm;
     float* p = set.GetVertArray();
 
+#if OE_SAFE
     // check that we can not use an uninitialized iterator
     OE_CHECK_THROW(elm->vert[0][0], Core::Exception);
+#endif
 
     elm = set.GetIterator();
 
@@ -28,9 +28,9 @@ int test_main(int argc, char* argv[]) {
     elm->vert[1][1] = 4; // 1 - y
     elm->vert[2][0] = 5; // and so on
     elm->vert[2][1] = 6;
-    BOOST_CHECK(*p++ == 1 && *p++ == 2);
-    BOOST_CHECK(*p++ == 3 && *p++ == 4);
-    BOOST_CHECK(*p++ == 5 && *p++ == 6);
+    OE_CHECK(*p++ == 1 && *p++ == 2);
+    OE_CHECK(*p++ == 3 && *p++ == 4);
+    OE_CHECK(*p++ == 5 && *p++ == 6);
 
     // increment and write another two elements
     elm.Next();
@@ -40,15 +40,15 @@ int test_main(int argc, char* argv[]) {
     elm->vert[1][1] = 3;
     elm->vert[2][0] = 2;
     elm->vert[2][1] = 1;
-    BOOST_CHECK(*p++ == 6 && *p++ == 5);
-    BOOST_CHECK(*p++ == 4 && *p++ == 3);
-    BOOST_CHECK(*p++ == 2 && *p++ == 1);
+    OE_CHECK(*p++ == 6 && *p++ == 5);
+    OE_CHECK(*p++ == 4 && *p++ == 3);
+    OE_CHECK(*p++ == 2 && *p++ == 1);
 
     // check that the first elements are still there
     p = set.GetVertArray();
-    BOOST_CHECK(*p++ == 1 && *p++ == 2);
-    BOOST_CHECK(*p++ == 3 && *p++ == 4);
-    BOOST_CHECK(*p++ == 5 && *p++ == 6);
+    OE_CHECK(*p++ == 1 && *p++ == 2);
+    OE_CHECK(*p++ == 3 && *p++ == 4);
+    OE_CHECK(*p++ == 5 && *p++ == 6);
 
 #if OE_SAFE
     // check out-of-bound exceptions
@@ -64,7 +64,7 @@ int test_main(int argc, char* argv[]) {
     // test iteration
     int i = 0;
     for (elm = set.GetIterator(); elm.HasMore(); elm.Next()) i++;
-    BOOST_CHECK(i == 2);
+    OE_CHECK(i == 2);
 
     return 0;
 }
