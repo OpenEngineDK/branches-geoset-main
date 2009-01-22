@@ -68,7 +68,13 @@ public:
         Quad     = 4
     };
 
-    // Internal iterator (inherits template parameters)
+    /**
+     * Geometry iterator.
+     * Access to data is provided through the pointer (->) operator.
+     * Such as @code elm->vert[n][i] @endcode
+     *
+     * (inherits template parameters)
+     */
     class Iterator {
 
         friend class GeometrySet;
@@ -142,6 +148,13 @@ public:
 
         /**
          * Access to values in the set via the iterator.
+         * The valid members are:
+         *   - \a vert : vertex data
+         *   - \a norm : soft normals
+         *   - \a texc : texture coordinates
+         *   - \a colr : colors
+         *
+         * @throw Core::Exception
          */
         inline Members* operator->() {
 #if OE_SAFE
@@ -159,7 +172,9 @@ public:
         bool HasMore() { return pos > 0; }
 
         /**
-         * Advance the iterator
+         * Advance the iterator.
+         *
+         * @throws Core::Exception
          */
         void Next() {
 #if OE_SAFE
