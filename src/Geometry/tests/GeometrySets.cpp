@@ -1,7 +1,8 @@
 #include <Testing/Testing.h>
 
 #include <Geometry/GeometrySet.h>
-#include <Math/Exceptions.h>
+#include <Core/Exceptions.h>
+#include <Math/Vector.h>
 
 using namespace std;
 using namespace OpenEngine;
@@ -77,6 +78,18 @@ int test_main(int argc, char* argv[]) {
     // attempt to access the third component (z) of a 2-tuple (x,y)
     // i.e. texture coordinates are in the plane, even for a set in space
     OE_CHECK_THROW(elm2->texc[0][2], Core::Exception);
+
+    // test conversion to known OE/C types
+    // get the raw array to the data. updates are destructive (and unchecked!)
+    float* a = elm2->vert[0].GetArray();
+    a[0] = 1; a[1] = 2; a[2] = 3;
+    // convert the data to an OE vector and checked
+    Math::Vector<3,float> v = elm2->vert[0].ToVector();
+    OE_CHECK(v[0] == 1 && v[1] == 2 && v[2] == 3);
+    // updates are local
+    v[0] = 4; OE_CHECK(v[0] == 4 && a[0] == 1);
+    // and also checked
+    OE_CHECK_THROW(v[3], Core::Exception);
 
     return 0;
 }

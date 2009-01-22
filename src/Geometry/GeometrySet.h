@@ -10,12 +10,11 @@
 #ifndef _OE_GEOMETRY_SET_H_
 #define _OE_GEOMETRY_SET_H_
 
-#include <iostream>
-
 // @todo: IndexOutOfBounds should be refactored to Core/Exceptions?
 // and maybe we should create a OverflowException for the case of
 // incrementing to far in an iterator.
 #include <Math/Exceptions.h>
+#include <Math/Vector.h>
 
 namespace OpenEngine {
 namespace Geometry {
@@ -85,6 +84,8 @@ public:
             T* p;
             Accessor1() : p(NULL) {}
             Accessor1(T* p) : p(p) {}
+            T* GetArray() { return p; }
+            Math::Vector<N,T> ToVector() { return Math::Vector<N,T>(p); }
             inline T& operator[](unsigned int i) { 
 #if OE_SAFE 
                 if (i >= N)
