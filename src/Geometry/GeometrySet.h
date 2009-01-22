@@ -79,26 +79,33 @@ public:
         // T : the type of data elements
         //
         // First level directly guards the data field
-        template <class T> struct A1 {
+        template <class T, int N>
+        class Accessor1 {
+        public:
             T* p;
-            A1(T* p) : p(p) {}
+            Accessor1() : p(NULL) {}
+            Accessor1(T* p) : p(p) {}
             inline T& operator[](unsigned int i) { 
 #if OE_SAFE 
-                if (i >= Dimension)
-                    throw Math::IndexOutOfBounds(i,0,Dimension);
+                if (i >= N)
+                    throw Math::IndexOutOfBounds(i, 0, N);
 #endif
                 return *(p + i);
             }
         };
         // Second level accessor guards a first-level accessor
-        template <class T> struct A2 {
+        template <class T, int N, int M>
+        class Accessor2 {
+        public:
             T* p;
-            inline A1<T> operator[](unsigned int i) { 
+            Accessor2() : p(NULL) {}
+            Accessor2(T* p) : p(p) {}
+            inline Accessor1<T, M> operator[](unsigned int i) { 
 #if OE_SAFE 
-                if (i >= Shape)
-                    throw Math::IndexOutOfBounds(i,0,Shape);
+                if (i >= N)
+                    throw Math::IndexOutOfBounds(i, 0, N);
 #endif
-                return A1<T>(p + i * Dimension);
+                return Accessor1<T, M>(p + i * M);
             }
         };
 
@@ -107,6 +114,7 @@ public:
             this->set = &set;
             pos = set.size;
             mem.vert.p = set.vert;
+            mem.texc.p = set.texc;
         }
 
         // the set we are iterating
@@ -117,7 +125,8 @@ public:
 
         // inner struct of valid iterator member pointers
         struct Members {
-            A2<float> vert;
+            Accessor2<float, Shape, Dimension> vert;
+            Accessor2<float, Shape, 2>         texc;
         } mem;
         
     public:
@@ -178,6 +187,7 @@ public:
         // Allocate (and initialize?) data
         indx = new int[size];
         vert = new float[size * Dimension * Shape];
+        texc = new float[size * 2 * Shape]; // always in the plane
     }
 
     /**
@@ -187,6 +197,7 @@ public:
     virtual ~GeometrySet() {
         delete[] indx;
         delete[] vert;
+        delete[] texc;
     }
 
     // Get an iterator
@@ -199,14 +210,14 @@ public:
     unsigned int GetIndxLength() { return size; }
     unsigned int GetVertLength() { return size * Dimension * Shape; }
     //unsigned int GetNormLength() { return size * Dimension * Shape; }
-    //unsigned int GetTexcLength() { return size * Dimension * Shape; }
+    unsigned int GetTexcLength() { return size * Dimension * Shape; }
     //unsigned int GetColrLength() { return size * Dimension * Shape; }
 
     // Get the direct pointer of an internal array
     int*   GetIndxArray() { return indx; }
     float* GetVertArray() { return vert; }
     //float* GetNormArray() { return norm; }
-    //float* GetTexcArray() { return texc; }
+    float* GetTexcArray() { return texc; }
     //float* GetColrArray() { return colr; }
 
 private:
@@ -215,7 +226,7 @@ private:
     int*   indx;
     float* vert;
     //float* norm;
-    //float* texc;
+    float* texc;
     //float* colr;
 };
 

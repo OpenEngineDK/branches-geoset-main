@@ -66,5 +66,17 @@ int test_main(int argc, char* argv[]) {
     for (elm = set.GetIterator(); elm.HasMore(); elm.Next()) i++;
     OE_CHECK(i == 2);
 
+    // create a set of lines in space
+    GeometrySet<3, 2> set2(2);
+    GeometrySet<3, 2>::Iterator elm2;
+    // test access to texture component
+    elm2 = set2.GetIterator();
+    elm2->texc[0][0] = 1;
+    elm2->texc[0][1] = 2;
+    OE_CHECK(*set2.GetTexcArray() == 1 && *(set2.GetTexcArray()+1) == 2);
+    // attempt to access the third component (z) of a 2-tuple (x,y)
+    // i.e. texture coordinates are in the plane, even for a set in space
+    OE_CHECK_THROW(elm2->texc[0][2], Core::Exception);
+
     return 0;
 }
