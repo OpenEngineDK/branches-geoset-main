@@ -91,5 +91,17 @@ int test_main(int argc, char* argv[]) {
     // and also checked
     OE_CHECK_THROW(v[3], Core::Exception);
 
+    // test vector assignment
+    // create a set of lines in space
+    GeometrySet<3, 2> set3(2);
+    GeometrySet<3, 2>::Iterator elm3;
+    elm3 = set3.GetIterator();
+    // create vector we would like to write into the set
+    Math::Vector<3,float> vec_assign(4,5,6);
+    // set for element in set equal to the vector
+    elm3->vert[0] = vec_assign;
+    // test the value was written correctly into the set
+    OE_CHECK(elm3->vert[0][0] == 4.0f && elm3->vert[0][1] == 5.0f && elm3->vert[0][2] == 6.0f);
+
     return 0;
 }

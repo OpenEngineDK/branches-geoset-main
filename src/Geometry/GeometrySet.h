@@ -99,6 +99,11 @@ public:
 #endif
                 return *(p + i);
             }
+            void operator=(const Math::Vector<N,T>& v){
+                p[0] = v.Get(0);
+                p[1] = v.Get(1);
+                p[2] = v.Get(2);
+            }
         };
         // Second level accessor guards a first-level accessor
         template <class T, int N, int M>
