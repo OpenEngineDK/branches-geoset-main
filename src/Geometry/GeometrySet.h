@@ -49,6 +49,9 @@ namespace Geometry {
  *   elm->vert[2][1] = 3  // identical triangles in the plane.
  * }
  * @endcode
+ *
+ * More example usage can be found in the GeometrySet test file: tests/GeometrySets.cpp
+ * @see GeometrySets.cpp
  */
 template <int Dimension, int Shape>
 class GeometrySet {
